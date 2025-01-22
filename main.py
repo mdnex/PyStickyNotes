@@ -4,6 +4,7 @@ from PyQt6.QtCore import Qt
 #from PyQt6.QtCore.Qt import QTextDocument
 import sys
 import settings
+import datetime
 
 # main_path = "/home/mdnext/pysticky"
 current_doc = ""
@@ -44,7 +45,8 @@ class Edit(QPlainTextEdit):
         # text = self.toPlainText().strip()
         global current_doc
         if not current_doc:
-            title = "doc"+str(len(files))
+            dt = datetime.date.today()
+            title = "{}-{}-{}-doc{}".format(dt.day,dt.month,dt.year,str(len(files)))
             current_doc = settings.get_notes_path() + title
         #text.split("\n")[0]
         # title = title[0:100].split(" ")[-1] if len(title)>100 else title
@@ -116,7 +118,7 @@ class Settings(QVBoxLayout):
         # bt.setStyleSheet("color:{};border : 0;width:352%;height:50px;background-color:{}".format(settings.get_text_color(),settings.get_background()))
         
         hb = QHBoxLayout()
-        lbl1 = QLabel("transparency")
+        lbl1 = QLabel("opacity (10 - 90)")
         
         self.lineEdit = QLineEdit()
         onlyInt = QIntValidator()
@@ -151,6 +153,7 @@ class Settings(QVBoxLayout):
         
         # self.addWidget(self.lineEdit)
         # self.addWidget(bt1)
+        self.addWidget(lbl1)
         self.addLayout(hb)
         self.addWidget(lbl2)
         self.addWidget(bt2)
@@ -162,7 +165,7 @@ class Settings(QVBoxLayout):
     
     def save_transparency(self):
         # print(self.lineEdit.text)
-        settings.set_transparency(self.lineEdit.text())
+        settings.set_transparency(self.lineEdit.text() if self.lineEdit.text() else "50")
         self.lineEdit.setText("")
         reload_main()
         
